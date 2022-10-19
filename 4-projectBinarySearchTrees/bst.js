@@ -8,6 +8,7 @@ tree.prettyPrint(tree.root);
 tree.deleteData(19);
 
 tree.prettyPrint(tree.root);
+console.log(tree.traverseBreathFirst());
 
 function Node(data) {
 	return {
@@ -107,8 +108,6 @@ function Tree(array) {
 		// For shallow copies, it's important to understand that selectively changing
 		// the value of a shared property of an existing element in an object is different
 		// from assigning a completely new value to an existing element.
-		// This is why node variable is just for comparing. Assigning something will not
-		// change this.root.
 
 		if (foundNodes.parentNode === undefined) {
 			parentNode = this;
@@ -149,23 +148,29 @@ function Tree(array) {
 				node.data = inorderSuccesor.data;
 				inorderSuccesorParent.leftNode = inorderSuccesor.rightNode;
 			}
-			// let inorderSuccesorParent = parentNode[whichNode];
-			// while (inorderSuccesorParent.rightNode.leftNode !== null) {
-			// 	inorderSuccesorParent = inorderSuccesorParent.rightNode.leftNode;
-			// }
-			// if (inorderSuccesorParent === parentNode[whichNode]) {
-			// 	parentNode[whichNode].data = inorderSuccesorParent.rightNode.data;
-			// 	console.log(inorderSuccesorParent);
-			// 	parentNode[whichNode].rightNode =
-			// 		parentNode[whichNode].rightNode.rightNode;
-			// } else {
-			// 	console.log(inorderSuccesorParent);
-			// 	parentNode[whichNode].data = inorderSuccesorParent.leftNode.data;
-			// 	inorderSuccesorParent.leftNode = inorderSuccesorParent.leftNode.rightNode;
-			// }
-
 			console.log(`Deleted Data ${data} had two childs.`);
 		}
+	}
+
+	function levelOrder(fn) {}
+
+	function traverseBreathFirst() {
+		let breathedArray = [];
+		let queue = [];
+
+		function traverseRecursive(breathedArray, queue) {
+			console.log({breathedArray, queue});
+			if (queue === []) {
+				console.log("dentrop");
+				return breathedArray;
+			}
+			
+			// breathedArray.push(queue[0].data);
+			// queue.pop();
+			// // console.log({breathedArray, queue});
+			// traverseRecursive(breathedArray, queue);
+		}
+		return traverseRecursive(breathedArray, queue);
 	}
 
 	function prettyPrint(node, prefix = "", isLeft = true) {
@@ -188,6 +193,7 @@ function Tree(array) {
 		findParent,
 		insertData,
 		deleteData,
+		traverseBreathFirst,
 		prettyPrint,
 	};
 }
