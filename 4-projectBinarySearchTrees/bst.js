@@ -1,4 +1,4 @@
-let sortFunctions = require("../2-projectRecursion/assignment-2/exer2");
+let sortFunctions = require("./sortFunctions");
 
 let arreglo = sortFunctions.randomArray(20);
 let tree = Tree([
