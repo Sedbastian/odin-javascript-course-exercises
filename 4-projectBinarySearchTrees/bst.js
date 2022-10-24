@@ -3,9 +3,10 @@ let sortFunctions = require("./sortFunctions");
 let arreglo = sortFunctions.randomArray(50, 100);
 
 let tree = Tree(arreglo);
-tree.prettyPrint(tree.root);
 
-console.log(tree.depth(tree.root.leftNode.leftNode.rightNode));
+tree.insertData(666, tree.root);
+tree.prettyPrint(tree.root);
+console.log(tree.isBalanced(tree.root));
 
 function Node(data) {
   return {
@@ -296,12 +297,12 @@ function Tree(array) {
   function height(node) {
     if (node === null) {
       return 0;
-		}
-		if (node === undefined) {
-			node = this.root;
-		}
+    }
+    if (node === undefined) {
+      node = this.root;
+    }
     let maxHeight = 0;
-    
+
     function heightRecursive(node, acumHeight) {
       if (node === null) {
         if (acumHeight > maxHeight) {
@@ -317,9 +318,36 @@ function Tree(array) {
     return heightRecursive(node, 0);
   }
 
-	function depth(node) {
-		return height.call(this, this.root) - height.call(this, node);
-	}
+  function depth(node) {
+    return height.call(this, this.root) - height.call(this, node);
+  }
+
+  function isBalanced(node) {
+    if (node === undefined) {
+      node = this.root;
+    }
+    function traverse(node) {
+      const diff =
+        this.height.call(this, node.leftNode) -
+				this.height.call(this, node.rightNode);
+			if (diff < -1 || diff > 1) {
+				return false;
+      } else if (diff > -2 && diff < 2) {
+        if (node.leftNode) {
+          if (traverse.call(this, node.leftNode) === false) {
+            return false;
+          }
+        }
+        if (node.rightNode) {
+          if (traverse.call(this, node.rightNode) === false) {
+            return false;
+          }
+        }
+			}
+			return true;
+    }
+    return traverse.call(this, node);
+  }
 
   return {
     root: buildTree(sortFunctions.noContiguousReps(sortFunctions.sort(array))),
@@ -335,9 +363,10 @@ function Tree(array) {
     traversePreorder,
     preorder,
     traversePostorder,
-		height,
-		depth,
-    postorder
+    postorder,
+    height,
+    depth,
+    isBalanced
   };
 }
 
