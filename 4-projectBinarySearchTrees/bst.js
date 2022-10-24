@@ -26,12 +26,11 @@ let tree = Tree([
 ]);
 tree.prettyPrint(tree.root);
 
-console.log(tree.traverseInorder());
+console.log(tree.traversePostorder());
 function fnc(e) {
-	return 2 * e;
+  return 2 * e;
 }
-console.log(tree.inorder(fnc));
-
+console.log(tree.postorder(fnc));
 
 function Node(data) {
   return {
@@ -42,6 +41,20 @@ function Node(data) {
 }
 
 function Tree(array) {
+  function prettyPrint(node, prefix = "", isLeft = true) {
+    if (node.rightNode !== null) {
+      prettyPrint(
+        node.rightNode,
+        `${prefix}${isLeft ? "│   " : "    "}`,
+        false
+      );
+    }
+    console.log(`${prefix}${isLeft ? "└── " : "┌── "}${node.data}`);
+    if (node.leftNode !== null) {
+      prettyPrint(node.leftNode, `${prefix}${isLeft ? "    " : "│   "}`, true);
+    }
+  }
+
   function find(data, node) {
     if (node === undefined) {
       node = this.root;
@@ -213,19 +226,19 @@ function Tree(array) {
   }
 
   function inorder(fnc) {
-		let inorderTree = traverseInorder.call(this);
-		let outputArray = [];
-		if (fnc === undefined) {
-			inorderTree.forEach(element => {
-				outputArray.push(element);
-			});
-		} else {
-			inorderTree.forEach(element => {
-				outputArray.push(fnc(element));
-			});
-		}
-		return outputArray;
-	}
+    let inorderTree = traverseInorder.call(this);
+    let outputArray = [];
+    if (fnc === undefined) {
+      inorderTree.forEach(element => {
+        outputArray.push(element);
+      });
+    } else {
+      inorderTree.forEach(element => {
+        outputArray.push(fnc(element));
+      });
+    }
+    return outputArray;
+  }
 
   function traverseInorder() {
     let inorderArray = [];
@@ -239,35 +252,87 @@ function Tree(array) {
       inorderArray.push(node.data);
       traverseRecursive(node.rightNode);
     }
-		traverseRecursive(node);
-		return inorderArray;
+    traverseRecursive(node);
+    return inorderArray;
   }
 
-  function prettyPrint(node, prefix = "", isLeft = true) {
-    if (node.rightNode !== null) {
-      prettyPrint(
-        node.rightNode,
-        `${prefix}${isLeft ? "│   " : "    "}`,
-        false
-      );
+  function preorder(fnc) {
+    let preorderTree = traversePreorder.call(this);
+    let outputArray = [];
+    if (fnc === undefined) {
+      preorderTree.forEach(element => {
+        outputArray.push(element);
+      });
+    } else {
+      preorderTree.forEach(element => {
+        outputArray.push(fnc(element));
+      });
     }
-    console.log(`${prefix}${isLeft ? "└── " : "┌── "}${node.data}`);
-    if (node.leftNode !== null) {
-      prettyPrint(node.leftNode, `${prefix}${isLeft ? "    " : "│   "}`, true);
+    return outputArray;
+  }
+
+  function traversePreorder() {
+    let preorderArray = [];
+    let node = this.root;
+
+    function traverseRecursive(node) {
+      if (node === null) {
+        return;
+      }
+      preorderArray.push(node.data);
+      traverseRecursive(node.leftNode);
+      traverseRecursive(node.rightNode);
     }
+    traverseRecursive(node);
+    return preorderArray;
+  }
+
+	function postorder(fnc) {
+		let postorderTree = traversePostorder.call(this);
+		let outputArray = [];
+		if (fnc === undefined) {
+			postorderTree.forEach(element => {
+				outputArray.push(element);
+			});
+		} else {
+			postorderTree.forEach(element => {
+				outputArray.push(fnc(element));
+			});
+		}
+		return outputArray;
+	}
+
+  function traversePostorder() {
+    let postorderArray = [];
+    let node = this.root;
+
+    function traverseRecursive(node) {
+      if (node === null) {
+        return;
+      }
+      traverseRecursive(node.leftNode);
+      traverseRecursive(node.rightNode);
+      postorderArray.push(node.data);
+    }
+    traverseRecursive(node);
+    return postorderArray;
   }
 
   return {
     root: buildTree(noContiguousReps(sortFunctions.sort(array))),
+    prettyPrint,
     find,
     findParent,
     insertData,
     deleteData,
     traverseBreathFirst,
-		levelOrder,
-		traverseInorder,
-		inorder,
-    prettyPrint
+    levelOrder,
+    traverseInorder,
+    inorder,
+    traversePreorder,
+    preorder,
+		traversePostorder,
+		postorder
   };
 }
 
