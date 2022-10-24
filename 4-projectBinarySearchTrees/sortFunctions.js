@@ -1,9 +1,22 @@
-function randomArray(length) {
+function randomArray(length, maxValue) {
   let array = [];
   for (let index = 0; index < length; index++) {
-    array[index] = Math.floor(Math.random() * 100);
+    array[index] = Math.floor(Math.random() * maxValue);
   }
   return array;
+}
+
+function noContiguousReps(orderedArray) {
+  if (orderedArray.length >= 1) {
+    let noRep = [];
+    noRep.push(orderedArray[0]);
+    for (let index = 1; index < orderedArray.length; index++) {
+      if (orderedArray[index - 1] !== orderedArray[index]) {
+        noRep.push(orderedArray[index]);
+      }
+    }
+    return noRep;
+  }
 }
 
 function sort(array) {
@@ -48,4 +61,4 @@ function merge(array1, array2, mergedArray) {
   return merge(array1, array2, mergedArray);
 }
 
-module.exports = { randomArray, sort, mergeSort, merge };
+module.exports = { randomArray, noContiguousReps, sort, mergeSort, merge };

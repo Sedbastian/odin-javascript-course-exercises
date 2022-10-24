@@ -1,12 +1,12 @@
 let sortFunctions = require("./sortFunctions");
 
-let arreglo = sortFunctions.randomArray(1);
+let arreglo = sortFunctions.randomArray(50, 100);
 
-console.log(noContiguousReps(sortFunctions.sort(arreglo)));
 let tree = Tree(arreglo);
 tree.prettyPrint(tree.root);
 
-console.log(tree.height());
+console.log(tree.depth(tree.root.leftNode.leftNode.rightNode));
+
 function Node(data) {
   return {
     data,
@@ -296,7 +296,10 @@ function Tree(array) {
   function height(node) {
     if (node === null) {
       return 0;
-    }
+		}
+		if (node === undefined) {
+			node = this.root;
+		}
     let maxHeight = 0;
     
     function heightRecursive(node, acumHeight) {
@@ -311,11 +314,15 @@ function Tree(array) {
       }
       return maxHeight;
     }
-    return heightRecursive(this.root, 0);
+    return heightRecursive(node, 0);
   }
 
+	function depth(node) {
+		return height.call(this, this.root) - height.call(this, node);
+	}
+
   return {
-    root: buildTree(noContiguousReps(sortFunctions.sort(array))),
+    root: buildTree(sortFunctions.noContiguousReps(sortFunctions.sort(array))),
     prettyPrint,
     find,
     findParent,
@@ -328,7 +335,8 @@ function Tree(array) {
     traversePreorder,
     preorder,
     traversePostorder,
-    height,
+		height,
+		depth,
     postorder
   };
 }
@@ -353,17 +361,4 @@ function buildTree(array) {
     }
   }
   return rootNode;
-}
-
-function noContiguousReps(orderedArray) {
-  if (orderedArray.length >= 1) {
-    let noRep = [];
-    noRep.push(orderedArray[0]);
-    for (let index = 1; index < orderedArray.length; index++) {
-      if (orderedArray[index - 1] !== orderedArray[index]) {
-        noRep.push(orderedArray[index]);
-      }
-    }
-    return noRep;
-  }
 }
