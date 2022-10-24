@@ -1,37 +1,12 @@
 let sortFunctions = require("./sortFunctions");
 
-let arreglo = sortFunctions.randomArray(20);
-let tree = Tree([
-  1,
-  2,
-  3,
-  4,
-  5,
-  6,
-  7,
-  8,
-  9,
-  10,
-  11,
-  12,
-  13,
-  14,
-  15,
-  16,
-  17,
-  18,
-  19,
-  20,
-  21
-]);
+let arreglo = sortFunctions.randomArray(1);
+
+console.log(noContiguousReps(sortFunctions.sort(arreglo)));
+let tree = Tree(arreglo);
 tree.prettyPrint(tree.root);
 
-console.log(tree.traversePostorder());
-function fnc(e) {
-  return 2 * e;
-}
-console.log(tree.postorder(fnc));
-
+console.log(tree.height());
 function Node(data) {
   return {
     data,
@@ -287,20 +262,20 @@ function Tree(array) {
     return preorderArray;
   }
 
-	function postorder(fnc) {
-		let postorderTree = traversePostorder.call(this);
-		let outputArray = [];
-		if (fnc === undefined) {
-			postorderTree.forEach(element => {
-				outputArray.push(element);
-			});
-		} else {
-			postorderTree.forEach(element => {
-				outputArray.push(fnc(element));
-			});
-		}
-		return outputArray;
-	}
+  function postorder(fnc) {
+    let postorderTree = traversePostorder.call(this);
+    let outputArray = [];
+    if (fnc === undefined) {
+      postorderTree.forEach(element => {
+        outputArray.push(element);
+      });
+    } else {
+      postorderTree.forEach(element => {
+        outputArray.push(fnc(element));
+      });
+    }
+    return outputArray;
+  }
 
   function traversePostorder() {
     let postorderArray = [];
@@ -318,6 +293,27 @@ function Tree(array) {
     return postorderArray;
   }
 
+  function height(node) {
+    if (node === null) {
+      return 0;
+    }
+    let maxHeight = 0;
+    
+    function heightRecursive(node, acumHeight) {
+      if (node === null) {
+        if (acumHeight > maxHeight) {
+          maxHeight = acumHeight;
+        }
+      } else {
+        acumHeight++;
+        heightRecursive(node.leftNode, acumHeight);
+        heightRecursive(node.rightNode, acumHeight);
+      }
+      return maxHeight;
+    }
+    return heightRecursive(this.root, 0);
+  }
+
   return {
     root: buildTree(noContiguousReps(sortFunctions.sort(array))),
     prettyPrint,
@@ -331,8 +327,9 @@ function Tree(array) {
     inorder,
     traversePreorder,
     preorder,
-		traversePostorder,
-		postorder
+    traversePostorder,
+    height,
+    postorder
   };
 }
 
@@ -359,7 +356,7 @@ function buildTree(array) {
 }
 
 function noContiguousReps(orderedArray) {
-  if (orderedArray.length > 1) {
+  if (orderedArray.length >= 1) {
     let noRep = [];
     noRep.push(orderedArray[0]);
     for (let index = 1; index < orderedArray.length; index++) {
