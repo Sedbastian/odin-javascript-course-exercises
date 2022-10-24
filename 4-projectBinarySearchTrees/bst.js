@@ -26,13 +26,8 @@ let tree = Tree([
 ]);
 tree.prettyPrint(tree.root);
 
-console.log(tree.traverseBreathFirst());
+console.log(tree.traverseInorder());
 
-function fnc(element) {
-  return 2 * element;
-}
-
-console.log(tree.levelOrder(fnc));
 
 function Node(data) {
   return {
@@ -199,7 +194,6 @@ function Tree(array) {
       if (queue.length === 0) {
         return breathedArray;
       }
-
       breathedArray.push(queue[0].data);
       if (queue[0].leftNode) {
         queue.push(queue[0].leftNode);
@@ -212,6 +206,24 @@ function Tree(array) {
       return traverseRecursive(breathedArray, queue);
     }
     return traverseRecursive(breathedArray, queue);
+  }
+
+  function inorderDepthFirst(fnc) {}
+
+  function traverseInorder() {
+    let inorderArray = [];
+    let node = this.root;
+
+    function traverseRecursive(node) {
+      if (node === null) {
+        return;
+      }
+      traverseRecursive(node.leftNode);
+      inorderArray.push(node.data);
+      traverseRecursive(node.rightNode);
+    }
+		traverseRecursive(node);
+		return inorderArray;
   }
 
   function prettyPrint(node, prefix = "", isLeft = true) {
@@ -235,7 +247,8 @@ function Tree(array) {
     insertData,
     deleteData,
     traverseBreathFirst,
-    levelOrder,
+		levelOrder,
+		traverseInorder,
     prettyPrint
   };
 }
