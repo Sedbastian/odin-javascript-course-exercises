@@ -27,6 +27,10 @@ let tree = Tree([
 tree.prettyPrint(tree.root);
 
 console.log(tree.traverseInorder());
+function fnc(e) {
+	return 2 * e;
+}
+console.log(tree.inorder(fnc));
 
 
 function Node(data) {
@@ -208,7 +212,20 @@ function Tree(array) {
     return traverseRecursive(breathedArray, queue);
   }
 
-  function inorderDepthFirst(fnc) {}
+  function inorder(fnc) {
+		let inorderTree = traverseInorder.call(this);
+		let outputArray = [];
+		if (fnc === undefined) {
+			inorderTree.forEach(element => {
+				outputArray.push(element);
+			});
+		} else {
+			inorderTree.forEach(element => {
+				outputArray.push(fnc(element));
+			});
+		}
+		return outputArray;
+	}
 
   function traverseInorder() {
     let inorderArray = [];
@@ -249,6 +266,7 @@ function Tree(array) {
     traverseBreathFirst,
 		levelOrder,
 		traverseInorder,
+		inorder,
     prettyPrint
   };
 }
