@@ -12,7 +12,7 @@ In this project, we learn about how to make a binary search tree. This data stru
 
 binarySearchTree(array) returns the following methods:
 
-    * `root`: buildTree(array), Binary Search Tree object from array.
+    * `root: buildTree(array)`, Binary Search Tree object from array.
 
     * `buildTree(array)`, Sorts array, removes duplicates and returns BST object.
 
