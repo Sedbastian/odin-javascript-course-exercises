@@ -4,9 +4,21 @@ let arreglo = sortFunctions.randomArray(50, 100);
 
 let tree = Tree(arreglo);
 
-tree.insertData(666, tree.root);
+tree.insertData(6666, tree.root);
+tree.insertData(6667, tree.root);
+tree.insertData(6668, tree.root);
+tree.insertData(6669, tree.root);
+tree.insertData(66610, tree.root);
+tree.insertData(66611, tree.root);
+tree.insertData(66612, tree.root);
+tree.insertData(66613, tree.root);
+
+
 tree.prettyPrint(tree.root);
-console.log(tree.isBalanced(tree.root));
+console.log(tree.isBalanced());
+tree.reBalance();
+tree.prettyPrint(tree.root);
+console.log(tree.isBalanced());
 
 function Node(data) {
   return {
@@ -16,7 +28,32 @@ function Node(data) {
   };
 }
 
+// array will be first sorted and then without contiguous repetitions.
+
+
 function Tree(array) {
+	function buildTree(array) {
+		let sortedNoReps = sortFunctions.noContiguousReps(sortFunctions.sort(array));
+		let rootNode;
+		if (sortedNoReps.length === 1) {
+			return Node(sortedNoReps[0]);
+		} else {
+			const mid = Math.floor((sortedNoReps.length - 1) / 2);
+			rootNode = Node(sortedNoReps[mid]);
+			// If sortedNoReps has 3 or more elements, then it is sliced. If not, leftNode will remain null.
+			if (sortedNoReps.length > 2) {
+				const leftArray = sortedNoReps.slice(0, mid);
+				rootNode.leftNode = buildTree(leftArray);
+			}
+			// If sortedNoReps has 2 or more elements, then it is sliced. If not, rightNode will remain null.
+			if (sortedNoReps.length > 1) {
+				const rightArray = sortedNoReps.slice(mid + 1, sortedNoReps.length);
+				rootNode.rightNode = buildTree(rightArray);
+			}
+		}
+		return rootNode;
+	}
+
   function prettyPrint(node, prefix = "", isLeft = true) {
     if (node.rightNode !== null) {
       prettyPrint(
@@ -54,7 +91,6 @@ function Tree(array) {
       }
     }
   }
-
   function findParent(data, childNode, parentNode, whichNode) {
     let node = childNode;
     if (node === undefined) {
@@ -106,7 +142,6 @@ function Tree(array) {
       }
     }
   }
-
   function deleteData(data) {
     let foundNodes = findParent.call(this, data);
 
@@ -164,7 +199,7 @@ function Tree(array) {
     }
   }
 
-  function levelOrder(fnc) {
+  function levelOrderBreathFirst(fnc) {
     let breathedTree = traverseBreathFirst.call(this);
     let outputArray = [];
     if (fnc === undefined) {
@@ -178,30 +213,24 @@ function Tree(array) {
     }
     return outputArray;
   }
-
   function traverseBreathFirst() {
-    let breathedArray = [];
-    let queue = [this.root];
-
     function traverseRecursive(breathedArray, queue) {
-      if (queue.length === 0) {
-        return breathedArray;
-      }
+      if (queue.length === 0) return breathedArray;
       breathedArray.push(queue[0].data);
-      if (queue[0].leftNode) {
-        queue.push(queue[0].leftNode);
-      }
-      if (queue[0].rightNode) {
-        queue.push(queue[0].rightNode);
-      }
+      if (queue[0].leftNode) queue.push(queue[0].leftNode);
+      if (queue[0].rightNode) queue.push(queue[0].rightNode);
+
       queue.shift();
 
       return traverseRecursive(breathedArray, queue);
     }
+    let breathedArray = [];
+    let queue = [this.root];
+
     return traverseRecursive(breathedArray, queue);
   }
 
-  function inorder(fnc) {
+  function inorderDepthFirst(fnc) {
     let inorderTree = traverseInorder.call(this);
     let outputArray = [];
     if (fnc === undefined) {
@@ -215,8 +244,7 @@ function Tree(array) {
     }
     return outputArray;
   }
-
-  function traverseInorder() {
+  function traverseInorderDF() {
     let inorderArray = [];
     let node = this.root;
 
@@ -232,7 +260,7 @@ function Tree(array) {
     return inorderArray;
   }
 
-  function preorder(fnc) {
+  function preorderDepthFirst(fnc) {
     let preorderTree = traversePreorder.call(this);
     let outputArray = [];
     if (fnc === undefined) {
@@ -246,8 +274,7 @@ function Tree(array) {
     }
     return outputArray;
   }
-
-  function traversePreorder() {
+  function traversePreorderDF() {
     let preorderArray = [];
     let node = this.root;
 
@@ -263,7 +290,7 @@ function Tree(array) {
     return preorderArray;
   }
 
-  function postorder(fnc) {
+  function postorderDepthFirst(fnc) {
     let postorderTree = traversePostorder.call(this);
     let outputArray = [];
     if (fnc === undefined) {
@@ -277,8 +304,7 @@ function Tree(array) {
     }
     return outputArray;
   }
-
-  function traversePostorder() {
+  function traversePostorderDF() {
     let postorderArray = [];
     let node = this.root;
 
@@ -317,21 +343,19 @@ function Tree(array) {
     }
     return heightRecursive(node, 0);
   }
-
   function depth(node) {
     return height.call(this, this.root) - height.call(this, node);
   }
 
   function isBalanced(node) {
-    if (node === undefined) {
-      node = this.root;
-    }
+    if (node === undefined) node = this.root;
+    
     function traverse(node) {
       const diff =
         this.height.call(this, node.leftNode) -
-				this.height.call(this, node.rightNode);
-			if (diff < -1 || diff > 1) {
-				return false;
+        this.height.call(this, node.rightNode);
+      if (diff < -1 || diff > 1) {
+        return false;
       } else if (diff > -2 && diff < 2) {
         if (node.leftNode) {
           if (traverse.call(this, node.leftNode) === false) {
@@ -343,51 +367,36 @@ function Tree(array) {
             return false;
           }
         }
-			}
-			return true;
+      }
+      return true;
     }
     return traverse.call(this, node);
   }
+	function reBalance() {
+		this.root = this.buildTree(this.traverseBreathFirst());
+		return this.root;
+	}
 
   return {
-    root: buildTree(sortFunctions.noContiguousReps(sortFunctions.sort(array))),
-    prettyPrint,
+    root: buildTree(array),
+		buildTree,
+		prettyPrint,
+		buildTree,
     find,
     findParent,
     insertData,
     deleteData,
     traverseBreathFirst,
-    levelOrder,
-    traverseInorder,
-    inorder,
-    traversePreorder,
-    preorder,
-    traversePostorder,
-    postorder,
+    levelOrderBreathFirst,
+    traverseInorderDF,
+    inorderDepthFirst,
+    traversePreorderDF,
+    preorderDepthFirst,
+    traversePostorderDF,
+    postorderDepthFirst,
     height,
     depth,
-    isBalanced
+		isBalanced,
+		reBalance
   };
-}
-
-// array must be sorted and without repetitions.
-function buildTree(array) {
-  let rootNode;
-  if (array.length === 1) {
-    return Node(array[0]);
-  } else {
-    const mid = Math.floor((array.length - 1) / 2);
-    rootNode = Node(array[mid]);
-    // If array has 3 or more elements, then it is sliced. If not, leftNode will remain null.
-    if (array.length > 2) {
-      const leftArray = array.slice(0, mid);
-      rootNode.leftNode = buildTree(leftArray);
-    }
-    // If array has 2 or more elements, then it is sliced. If not, rightNode will remain null.
-    if (array.length > 1) {
-      const rightArray = array.slice(mid + 1, array.length);
-      rootNode.rightNode = buildTree(rightArray);
-    }
-  }
-  return rootNode;
 }

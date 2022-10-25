@@ -41,7 +41,6 @@ function mergeSort(array, sortedArray, pass) {
 // let arregloMerged = []; // Empty array to be populated and returned.
 
 // console.log(merge(arreglo1, arreglo2, arregloMerged));
-
 function merge(array1, array2, mergedArray) {
   if (array1.length === 0 && array2.length === 0) {
     return mergedArray;
